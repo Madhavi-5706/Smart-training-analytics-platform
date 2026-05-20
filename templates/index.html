@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrainWatch AI - Smart Classroom Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: #2d2d2d;
+            padding: 1rem 2rem;
+        }
+        .navbar-brand {
+            color: #4CAF50;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .hero-section {
+            padding: 8rem 0;
+            background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+        }
+        .feature-card {
+            background: #2d2d2d;
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease;
+            border: 1px solid #363636;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #4CAF50;
+            margin-bottom: 1rem;
+        }
+        .btn-custom {
+            background: #4CAF50;
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 5px;
+            border: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-custom:hover {
+            background: #45a049;
+            transform: scale(1.05);
+            color: white;
+        }
+        .stats-section {
+            background: #2d2d2d;
+            padding: 4rem 0;
+            margin: 4rem 0;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+        }
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .stat-label {
+            color: #aaa;
+            font-size: 1.1rem;
+        }
+        .highlight {
+            color: #4CAF50;
+        }
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+        .footer {
+            background: #2d2d2d;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#">TrainWatch AI</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 mb-4">Next-Generation <span class="highlight">Classroom Analytics</span></h1>
+            <p class="lead mb-5">Revolutionize training effectiveness with real-time AI-powered insights and engagement tracking</p>
+            <a href="/monitor" class="btn btn-custom btn-lg">Launch Dashboard</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container my-5">
+        <h2 class="text-center section-title mb-5">Intelligent Features</h2>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>Real-Time Analytics</h3>
+                    <p>Track engagement levels, attention scores, and training quality metrics in real-time with advanced AI processing.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h3>Smart Insights</h3>
+                    <p>Get AI-powered recommendations and insights to optimize training effectiveness and student engagement.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📈</div>
+                    <h3>Performance Tracking</h3>
+                    <p>Monitor trends, generate reports, and identify areas for improvement with comprehensive analytics.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">99%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">30ms</div>
+                        <div class="stat-label">Processing Speed</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">7+</div>
+                        <div class="stat-label">Key Metrics</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Monitoring</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="container text-center my-5">
+        <h2 class="section-title">Ready to Transform Your Training?</h2>
+        <p class="lead mb-4">Experience the power of AI-driven classroom analytics</p>
+        <a href="/monitor" class="btn btn-custom btn-lg">Get Started Now</a>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container text-center">
+            <p>© 2024 TrainWatch AI. Smart India Hackathon Project</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+    "bharathkumarpendem@gmail.com": {
+        "fullname": "admin",
+        "password": "scrypt:32768:8:1$etNQ1f3tiz4hjBj6$d92e397ce9f8e92b88b9c19d8409c4739475708662a181cb46f1e2376292a7d42838f74a2b0f84e76b154503ae9a3af273e895bfa25b892e2dacb8211a9292eb",
+        "language": "en",
+        "role": "admin"
+    },
+    "madhavikunapareddy5@gmail.com": {
+        "fullname": "Madhavi Priya",
+        "password": "scrypt:32768:8:1$b1gssjlQiiaSN6Yp$2c720b4304620534a718c4b0a5b3b40c4d0aedb344b9c1a417ab488daa2587a568fe28cbbbba40a91ca283e00596f20fae21915f273f27455f74667204036464",
+        "language": "en",
+        "role": "admin"
+    }
+}

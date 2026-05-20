@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Training Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: #1a1a1a; color: #fff; min-height: 100vh; }
+        .dashboard-card { background: #2d2d2d; border-radius: 10px; padding: 15px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .metric-value { font-size: 24px; font-weight: bold; color: #4CAF50; text-align: center; margin: 10px 0; }
+        .metric-label { color: #aaa; text-align: center; font-size: 14px; margin-bottom: 5px; }
+        .video-container { border-radius: 10px; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .status-indicator { padding: 5px 10px; border-radius: 15px; font-size: 14px; display: inline-block; background: #4CAF50; }
+        .status-good { background: #4CAF50; }
+        .status-warning { background: #FFC107; }
+        .status-danger { background: #F44336; }
+        .analysis-panel { max-height: 400px; overflow-y: auto; padding: 15px; background: #363636; border-radius: 8px; margin-top: 10px; }
+        .metric-card { background: #363636; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+        .header-section { background: #2d2d2d; padding: 15px; margin-bottom: 20px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .control-buttons { margin: 15px 0; }
+        .btn-custom { background: #4CAF50; border: none; padding: 8px 20px; color: white; border-radius: 5px; margin-right: 10px; cursor: pointer; }
+        .btn-custom:hover { background: #45a049; }
+        .secondary-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .secondary-metric { background: #363636; padding: 15px; border-radius: 8px; text-align: center; }
+        .secondary-metric .value { font-size: 20px; color: #4CAF50; margin: 5px 0; }
+        .skill-chart { height: 150px !important; width: 100%; position: relative; margin: 10px 0; }
+        /* AI Insights Glowing Card */
+        .ai-insights-card {
+            border: 1px solid #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.4);
+            transition: box-shadow 0.3s ease;
+        }
+        .ai-insights-card:hover {
+            box-shadow: 0 0 25px rgba(76, 175, 80, 0.6);
+        }
+        .ai-card-header {
+            border-bottom: 1px solid #444;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-section">
+        <h3>Training Analytics Dashboard</h3>
+        <div class="d-flex align-items-center">
+            <div class="status-indicator status-good" id="session-status">Live Session</div>
+            <button id="generateReportBtn" class="btn-custom ms-3">Generate Report</button>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Main Video Feed -->
+            <div class="col-lg-8">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4>Live Classroom Feed</h4>
+                        <div class="control-buttons">
+                            <button class="btn-custom" onclick="startProcessing()">Start</button>
+                            <button class="btn-custom" style="background: #F44336" onclick="stopProcessing()">Stop</button>
+                        </div>
+                    </div>
+                    <div class="video-container">
+                        <img src="{{ url_for('video_feed') }}" class="w-100">
+                    </div>
+                </div>
+
+                <!-- Primary Metrics -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Attention Score</div>
+                            <div class="metric-value" id="attention-value">0.0</div>
+                            <canvas id="attentionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Engagement</div>
+                            <div class="metric-value" id="engagement-value">0.0</div>
+                            <canvas id="engagementChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Quality</div>
+                            <div class="metric-value" id="quality-value">0.0</div>
+                            <canvas id="qualityChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="metric-card">
+                            <div class="metric-label">Compliance</div>
+                            <div class="metric-value" id="compliance-value">0.0</div>
+                            <canvas id="complianceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondary Metrics -->
+                <div class="secondary-metrics">
+                    <div class="secondary-metric">
+                        <div class="metric-label">Student Interaction</div>
+                        <div class="value" id="interaction-value">0.0</div>
+                    </div>
+                    <div class="secondary-metric">
+                        <div class="metric-label">Equipment Usage</div>
+                        <div class="value" id="equipment-value">0.0</div>
+                    </div>
+                    <div class="secondary-metric">
+                        <div class="metric-label">Space Utilization</div>
+                        <div class="value" id="space-value">0.0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Panel -->
+            <div class="col-lg-4">
+                <div class="dashboard-card ai-insights-card">
+                    <div class="d-flex justify-content-between align-items-center ai-card-header">
+                        <h4>🤖 AI Analysis Insights</h4>
+                        <div id="risk-level" class="status-indicator status-good">Low Risk</div>
+                    </div>
+                    <div class="analysis-panel" id="analysis-content">
+                        Initializing analysis...
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <h4>Performance Overview</h4>
+                    <canvas id="metricsChart"></canvas>
+                </div>
+
+            </div> </div>
+
+        <!-- Skill Monitoring Section -->
+        <div class="row">
+            <div class="col-12">
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Skill Monitoring</h4>
+                        <div class="upload-section">
+                            <input type="file" id="curriculum-file" accept=".pdf,.jpg,.jpeg,.png,.txt" style="display: none;" onchange="uploadCurriculum()">
+                            <button class="btn-custom" onclick="document.getElementById('curriculum-file').click()">Upload Curriculum</button>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <div class="metric-card">
+                                <div class="metric-label">Skill Compliance</div>
+                                <div class="metric-value" id="skill-compliance">0.0%</div>
+                                <canvas id="skillChart" class="skill-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="analysis-content" id="skill-analysis">Upload curriculum to start monitoring</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let processingActive = true;
+        let updateInterval;
+        let skillChart;
+
+        // ===== INITIALIZE CHARTS =====
+        function initializeCharts() {
+            const config = {
+                type: 'line',
+                data: {
+                    labels: Array(10).fill(''),
+                    datasets: [{
+                        data: Array(10).fill(0),
+                        borderColor: '#4CAF50',
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { min: 0, max: 10, display: false },
+                        x: { display: false }
+                    }
+                }
+            };
+
+            ['attention', 'engagement', 'quality', 'compliance'].forEach(metric => {
+                const ctx = document.getElementById(metric + 'Chart').getContext('2d');
+                window[metric + 'Chart'] = new Chart(ctx, JSON.parse(JSON.stringify(config)));
+            });
+
+            const metricsCtx = document.getElementById('metricsChart').getContext('2d');
+            window.metricsChart = new Chart(metricsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Attention', 'Engagement', 'Quality', 'Compliance', 'Interaction', 'Equipment', 'Space'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0, 0, 0],
+                        backgroundColor: ['#4CAF50','#2196F3','#FFC107','#9C27B0','#00BCD4','#FF5722','#795548'],
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 10, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: '#aaa' } },
+                        x: { grid: { display: false }, ticks: { color: '#aaa' } }
+                    }
+                }
+            });
+
+            const skillCtx = document.getElementById('skillChart').getContext('2d');
+            skillChart = new Chart(skillCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{ label: 'Skill Compliance', data: [], borderColor: '#4CAF50', tension: 0.4 }]
+                },
+                options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } } }
+            });
+        }
+
+        // ===== UPDATE ANALYSIS =====
+        function updateAnalysis() {
+            fetch('/get_analysis')
+                .then(response => response.json())
+                .then(data => {
+                    const metrics = data.metrics;
+                    document.getElementById('attention-value').textContent = (metrics.attention || 0).toFixed(1);
+                    document.getElementById('engagement-value').textContent = (metrics.engagement || 0).toFixed(1);
+                    document.getElementById('quality-value').textContent = (metrics.training_quality || 0).toFixed(1);
+                    document.getElementById('compliance-value').textContent = (metrics.infrastructure_compliance || 0).toFixed(1);
+                    document.getElementById('interaction-value').textContent = (metrics.student_interaction || 0).toFixed(1);
+                    document.getElementById('equipment-value').textContent = (metrics.equipment_usage || 0).toFixed(1);
+                    document.getElementById('space-value').textContent = (metrics.space_utilization || 0).toFixed(1);
+                    updateCharts(metrics);
+                })
+                .catch(error => console.error('Metrics error:', error));
+
+            fetch('/detailed_analysis')
+                .then(response => response.json())
+                .then(data => {
+                    const analysisContent = document.getElementById('analysis-content');
+                    if (analysisContent && data.gemini_response) {
+                        analysisContent.innerHTML = data.gemini_response.replace(/\n/g, '<br>');
+                    }
+                    if (data.risk_level) updateRiskLevel(data.risk_level);
+                })
+                .catch(error => console.error('Analysis error:', error));
+
+            fetch('/get_skill_analysis')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('skill-compliance').textContent = `${(data.score || 0).toFixed(1)}%`;
+                    if (data.analysis) {
+                        document.getElementById('skill-analysis').innerHTML = data.analysis.replace(/\n/g, '<br>');
+                    }
+                })
+                .catch(error => console.error('Skill error:', error));
+        }
+
+        // ===== UPDATE CHARTS =====
+        function updateCharts(metrics) {
+            ['attention', 'engagement', 'quality', 'compliance'].forEach(metric => {
+                const chart = window[metric + 'Chart'];
+                const value = metrics[metric === 'quality' ? 'training_quality' : metric === 'compliance' ? 'infrastructure_compliance' : metric] || 0;
+                if (chart && chart.data && chart.data.datasets) {
+                    chart.data.datasets[0].data.shift();
+                    chart.data.datasets[0].data.push(value);
+                    chart.update('none');
+                }
+            });
+
+            if (window.metricsChart && window.metricsChart.data) {
+                window.metricsChart.data.datasets[0].data = [
+                    metrics.attention || 0,
+                    metrics.engagement || 0,
+                    metrics.training_quality || 0,
+                    metrics.infrastructure_compliance || 0,
+                    metrics.student_interaction || 0,
+                    metrics.equipment_usage || 0,
+                    metrics.space_utilization || 0
+                ];
+                window.metricsChart.update('none');
+            }
+        }
+
+        // ===== RISK LEVEL =====
+        function updateRiskLevel(level) {
+            const indicator = document.getElementById('risk-level');
+            indicator.className = 'status-indicator';
+            if (level === 'GREEN') { indicator.classList.add('status-good'); indicator.textContent = 'Low Risk'; }
+            else if (level === 'YELLOW') { indicator.classList.add('status-warning'); indicator.textContent = 'Medium Risk'; }
+            else { indicator.classList.add('status-danger'); indicator.textContent = 'High Risk'; }
+        }
+
+        // ===== START / STOP =====
+        function startProcessing() {
+            processingActive = true;
+            document.getElementById('session-status').textContent = 'Live Session';
+            document.getElementById('session-status').style.background = '#4CAF50';
+            if (updateInterval) clearInterval(updateInterval);
+            updateAnalysis();
+            updateInterval = setInterval(updateAnalysis, 3000);
+        }
+
+        function stopProcessing() {
+            processingActive = false;
+            document.getElementById('session-status').textContent = 'Session Stopped';
+            document.getElementById('session-status').style.background = '#F44336';
+            if (updateInterval) clearInterval(updateInterval);
+        }
+
+        // ===== UPLOAD CURRICULUM =====
+        function uploadCurriculum() {
+            const fileInput = document.getElementById('curriculum-file');
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            fetch('/upload_curriculum', { method: 'POST', body: formData })
+                .then(response => response.json())
+                .then(data => { if (data.message) alert('Curriculum uploaded successfully!'); })
+                .catch(error => console.error('Upload error:', error));
+        }
+       // ===== GENERATE REPORT (SMART BUTTON) =====
+        document.getElementById('generateReportBtn').addEventListener('click', async function() {
+            const btn = this;
+            const originalText = btn.innerHTML; 
+            
+            // 1. Trigger Loading State
+            btn.innerHTML = '⏳ Generating AI Report...';
+            btn.disabled = true; 
+            btn.style.opacity = '0.7';
+
+            try {
+                // 2. Fetch the PDF
+                const response = await fetch('/generate_report');
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `Training_Report_${new Date().toISOString().split('T')[0]}.pdf`;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                } else {
+                    alert('Failed to generate report. Check the server logs.');
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert('A network error occurred.');
+            } finally {
+                // 3. Reset Button
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        });
+
+        // ===== AUTO START =====
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeCharts();
+            startProcessing();
+        });
+    </script>
+</body>
+</html>

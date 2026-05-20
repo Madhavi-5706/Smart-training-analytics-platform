@@ -1,0 +1,4 @@
+1.registration and login
+2.chatbot integration
+3.face attendence
+4.multi language support
