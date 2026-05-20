@@ -4,15 +4,6 @@
 
 This is an AI-powered real-time training analytics platform designed for Smart India Hackathon. The solution monitors skill training classrooms using computer vision, emotion analysis, and Google's Gemini AI to provide comprehensive insights into training effectiveness, student engagement, and infrastructure compliance.
 
-## Results 
-
-![Uploading 6258286968756617860.jpg…]()
-
-
-![Uploading pd_page-0015.jpg…]()
-
-
-
 ## 🏗️ Architecture & Solution Flow
 
 ### System Architecture
